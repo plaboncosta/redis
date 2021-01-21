@@ -8,7 +8,14 @@ class UserController {
 
   async index({request, response, view}) {
     const cachedUsers = await Redis.get('users');
-    // console.log(cachedUsers, 11)
+
+    if (cachedUsers){
+      return JSON.parse(cachedUsers);
+    }
+
+    const users = await User.all();
+    await Redis.set('users', JSON.stringify(users));
+    return users;
 
     // return view.render('welcome');
   }
